@@ -79,6 +79,7 @@ async function updateData() {
   updateQuery = []
   rank = 1
   let remainVariants = defaultVariantsOrder;
+  let newVariantOrder = "Rule Based";
   if (resp != null) {
      // rule activated
      for (p of resp) {
@@ -101,6 +102,7 @@ async function updateData() {
   } 
   else {
      console.log("go to default ranking")
+     newVariantOrder = "default Order";
   }
   // Manage the default order
   for (obj of remainVariants) {  
@@ -123,6 +125,7 @@ async function updateData() {
   return index.partialUpdateObjects(updateQuery, {
      createIfNotExists: false
   }).wait().then(res => {
+    res.newVariantOrder = newVariantOrder
     console.log("Task Completed!", res)
     return (res)
   });
@@ -135,7 +138,8 @@ exports.handler = async (event, context) => {
   return {
     statusCode: 200,
     body: JSON.stringify({
+      task: "Variants Order Changed => " + msg.newVariantOrder,
       msg: msg
-    })
+    }, null, 4)
   }
 }
